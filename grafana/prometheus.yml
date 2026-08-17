@@ -1,0 +1,10 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: zeitserver-pi
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          # Hostname oder IP des Pi (z. B. zeit-server.local)
+          - zeit-server.local:8080

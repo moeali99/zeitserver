@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zeitserver — NTP · GPS · DCF77 · RTC</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="header">
+    <div>
+      <h1>Zeitserver Monitor</h1>
+      <p class="subtitle">Vier Zeitquellen im Vergleich · HTW Projektarbeit</p>
+    </div>
+    <div class="meta">
+      <span id="ref-label" class="ref-label">Referenz: …</span>
+      <span id="updated" class="updated">—</span>
+      <span id="browser-clock" class="browser-clock"></span>
+    </div>
+  </header>
+
+  <section id="status-banners" class="status-banners" aria-live="polite"></section>
+
+  <section class="ref-panel">
+    <h2>Referenz-Uhr (beste Schätzung)</h2>
+    <div class="clock ref-clock" aria-live="polite">
+      <span id="ref-clock-time" class="clock-time">--:--:--</span>
+      <span id="ref-clock-date" class="clock-date">Warte auf Daten …</span>
+    </div>
+    <p id="fused-hint" class="hint"></p>
+  </section>
+
+  <section id="sources" class="sources" aria-live="polite"></section>
+
+  <section class="charts-section">
+    <h2>Verlauf der letzten 10 Minuten — jede Quelle einzeln</h2>
+    <p class="hint chart-hint" id="chart-retention-hint">Wird alle 2 Sekunden aktualisiert.</p>
+
+    <div id="per-source-charts" class="per-source-grid"></div>
+  </section>
+
+  <section class="matrix-section">
+    <h2>Stimmen die Uhren untereinander überein?</h2>
+    <p class="hint">Direkter Vergleich Quelle gegen Quelle — unabhängig von der Referenz.
+      Grün = praktisch gleich · Gelb = leichte Abweichung · Rot = stark abweichend.</p>
+    <div id="matrix" class="matrix"></div>
+  </section>
+
+  <footer class="footer">
+    <p>Grün = passt zur Referenz · Gelb = leichte Abweichung · Rot = stark abweichend · Grau = keine Daten</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

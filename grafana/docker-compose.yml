@@ -1,0 +1,23 @@
+# Grafana + Prometheus für Zeitserver-Metriken (vom Mac starten).
+# Pi muss unter PI_IP erreichbar sein (z. B. 172.20.10.3:8080/metrics).
+services:
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: zeitserver
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus

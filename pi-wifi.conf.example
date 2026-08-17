@@ -1,0 +1,5 @@
+# Kopieren nach pi-wifi.conf und Hotspot-Daten eintragen:
+#   cp pi-wifi.conf.example pi-wifi.conf
+WIFI_SSID="MeinHandyHotspot"
+WIFI_PSK="mein-wlan-passwort"
+WIFI_COUNTRY=DE

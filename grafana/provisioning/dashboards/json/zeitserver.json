@@ -1,0 +1,362 @@
+{
+  "title": "Zeitserver — NTP / GPS / DCF77",
+  "uid": "zeitserver-main",
+  "timezone": "Europe/Berlin",
+  "refresh": "5s",
+  "time": {
+    "from": "now-10m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": ["5s", "10s", "30s", "1m"],
+    "quick_ranges": [
+      { "display": "10 min", "from": "now-10m", "to": "now" },
+      { "display": "30 min", "from": "now-30m", "to": "now" },
+      { "display": "1 h", "from": "now-1h", "to": "now" }
+    ]
+  },
+  "tags": ["zeitserver"],
+  "graphTooltip": 1,
+  "panels": [
+    {
+      "type": "row",
+      "title": "Status (Live)",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false
+    },
+    {
+      "type": "stat",
+      "title": "NTP",
+      "description": "1 = Zeit empfangen, 0 = keine Daten",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "zeitserver_source_up{source=\"ntp\"}",
+          "legendFormat": "NTP",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "aus", "color": "red" }, "1": { "text": "an", "color": "green" } } }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          },
+          "color": { "mode": "thresholds" }
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "textMode": "value_and_name"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "GPS",
+      "description": "1 = Zeit empfangen, 0 = keine Daten",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "zeitserver_source_up{source=\"gps\"}",
+          "legendFormat": "GPS",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "aus", "color": "red" }, "1": { "text": "an", "color": "green" } } }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          },
+          "color": { "mode": "thresholds" }
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "textMode": "value_and_name"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "DCF77",
+      "description": "1 = Zeit empfangen, 0 = keine Daten",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "zeitserver_source_up{source=\"dcf77\"}",
+          "legendFormat": "DCF77",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "aus", "color": "red" }, "1": { "text": "an", "color": "green" } } }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          },
+          "color": { "mode": "thresholds" }
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "textMode": "value_and_name"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Failover",
+      "description": "1 = Failover-Modus aktiv",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{ "expr": "zeitserver_failover_active", "refId": "A" }],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "normal", "color": "green" }, "1": { "text": "aktiv", "color": "orange" } } }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 1 }
+            ]
+          },
+          "color": { "mode": "thresholds" }
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "textMode": "value"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Sommerzeit",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{ "expr": "zeitserver_dst_daylight_saving", "refId": "A" }],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "MEZ", "color": "blue" }, "1": { "text": "MESZ", "color": "yellow" } } }
+          ],
+          "color": { "mode": "thresholds" }
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "textMode": "value"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Fusion ↔ Referenz",
+      "description": "Abweichung der fusionierten Zeit zur Referenz (Sekunden)",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{ "expr": "zeitserver_fusion_offset_seconds", "refId": "A" }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 3,
+          "color": { "mode": "continuous-GrYlRd" }
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "textMode": "value"
+      }
+    },
+    {
+      "type": "row",
+      "title": "Abweichung zur Referenz (letzte 10 Minuten)",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "collapsed": false
+    },
+    {
+      "type": "timeseries",
+      "title": "NTP · GPS · DCF77 — Offset zur Referenz",
+      "description": "Positive Werte = Quelle liegt vor der Referenz, negative = hinter der Referenz.",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 6 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "zeitserver_source_offset_seconds{source=\"ntp\"}",
+          "legendFormat": "NTP",
+          "refId": "NTP"
+        },
+        {
+          "expr": "zeitserver_source_offset_seconds{source=\"gps\"}",
+          "legendFormat": "GPS",
+          "refId": "GPS"
+        },
+        {
+          "expr": "zeitserver_source_offset_seconds{source=\"dcf77\"}",
+          "legendFormat": "DCF77",
+          "refId": "DCF77"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 4,
+          "custom": {
+            "axisCenteredZero": true,
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 12,
+            "pointSize": 4,
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": { "mode": "none" }
+          },
+          "color": { "mode": "palette-classic" }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "NTP" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "#22c55e", "mode": "fixed" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "GPS" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "#3b82f6", "mode": "fixed" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "DCF77" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "#a855f7", "mode": "fixed" } }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": ["lastNotNull", "min", "max", "mean"]
+        },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      }
+    },
+    {
+      "type": "row",
+      "title": "Paarweise Differenz zwischen Quellen (letzte 10 Minuten)",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 16 },
+      "collapsed": false
+    },
+    {
+      "type": "timeseries",
+      "title": "Direkter Vergleich Quelle ↔ Quelle (Sekunden)",
+      "description": "Differenz der Rohzeiten — unabhängig von der Referenz. Nur sichtbar, wenn beide Quellen Daten liefern.",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 17 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "zeitserver_pair_delta_seconds{source_a=\"gps\",source_b=\"ntp\"}",
+          "legendFormat": "NTP ↔ GPS",
+          "refId": "NTP_GPS"
+        },
+        {
+          "expr": "zeitserver_pair_delta_seconds{source_a=\"dcf77\",source_b=\"ntp\"}",
+          "legendFormat": "NTP ↔ DCF77",
+          "refId": "NTP_DCF77"
+        },
+        {
+          "expr": "zeitserver_pair_delta_seconds{source_a=\"dcf77\",source_b=\"gps\"}",
+          "legendFormat": "GPS ↔ DCF77",
+          "refId": "GPS_DCF77"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 4,
+          "custom": {
+            "axisCenteredZero": true,
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "pointSize": 4,
+            "showPoints": "never",
+            "spanNulls": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "NTP ↔ GPS" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "#f97316", "mode": "fixed" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "NTP ↔ DCF77" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "#06b6d4", "mode": "fixed" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "GPS ↔ DCF77" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "#eab308", "mode": "fixed" } }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": ["lastNotNull", "min", "max", "mean"]
+        },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      }
+    }
+  ],
+  "schemaVersion": 39,
+  "version": 2
+}
