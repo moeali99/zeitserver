@@ -8,6 +8,13 @@ Median-Fusion eine robuste Referenzzeit. Ein Web-Dashboard visualisiert alles li
 
 Build-Stand: `1.0-abgabe-2026-08-07`
 
+![Zeitserver-Dashboard](docs/dashboard.png)
+
+*Dashboard lokal auf dem Mac ohne Pi-Hardware: nur NTP liefert Daten, GPS, DCF77 und RTC
+melden sich ehrlich als ausgefallen, und der Failover wählt NTP als Referenz.*
+
+**Tech-Stack:** Java 17 · Maven · jSerialComm · Raspberry Pi (UART, GPIO, I²C) · Bash · Prometheus/Grafana
+
 ## Schnellstart
 
 ```bash
@@ -107,3 +114,18 @@ history.retentionMinutes=10
 - Nach jedem Kopieren des Jars auf den Pi ist ein Prozess-Neustart erforderlich
   (`pi-on-pi-start-web.sh`); ein Jar-Tausch unter laufender JVM führt zu
   `ClassNotFoundException` durch verschobene Zip-Offsets.
+
+## Tests
+
+```bash
+cd zeitserver-java
+mvn test
+```
+
+17 Unit-Tests für die Kernlogik, die ohne Hardware laufen:
+
+- **DCF77-Codec:** Kodieren und Dekodieren ganzer Minutenrahmen (Winter-/Sommerzeit, Jahres- und Tageswechsel),
+  Verwerfen gekippter Bits über die Paritätsprüfung, ungültige Rahmen
+- **Median-Fusion:** gerade und ungerade Anzahl, Ausreißer-Filter, ausgefallene Quellen
+- **Zeit-Historie:** Messwerte aus den letzten 10 Minuten werden korrekt auf den aktuellen Zeitpunkt fortgeschrieben
+

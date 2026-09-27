@@ -59,25 +59,37 @@ public final class TimeHistoryStore {
         }
     }
 
+    /** Median der Historie, auf den aktuellen Zeitpunkt fortgeschrieben (siehe {@link #utcsInWindow}). */
     public Optional<Instant> medianUtc(String sourceId) {
-        Deque<Sample> q = bySource.get(sourceId);
-        if (q == null) {
-            return Optional.empty();
-        }
-        List<Instant> times;
-        synchronized (q) {
-            times = q.stream().map(Sample::sourceUtc).toList();
-        }
-        return TimeFusion.medianUtc(times);
+        return TimeFusion.medianUtc(utcsInWindow(sourceId));
     }
 
+    /**
+     * Alle Messwerte der Quelle im Fenster, jeweils auf "jetzt" fortgeschrieben:
+     * {@code sourceUtc + (jetzt - recordedAt)}. Ohne diese Korrektur laege der Median
+     * einer 10-Minuten-Historie im Mittel Minuten in der Vergangenheit.
+     */
     public List<Instant> utcsInWindow(String sourceId) {
+        return utcsInWindow(sourceId, Instant.now());
+    }
+
+    List<Instant> utcsInWindow(String sourceId, Instant now) {
         Deque<Sample> q = bySource.get(sourceId);
         if (q == null) {
             return List.of();
         }
         synchronized (q) {
-            return q.stream().map(Sample::sourceUtc).toList();
+            return q.stream()
+                    .map(smp -> smp.sourceUtc().plus(Duration.between(smp.recordedAt(), now)))
+                    .toList();
+        }
+    }
+
+    /** Fuer Tests: Messwert mit vorgegebenem Aufnahmezeitpunkt. */
+    void record(String sourceId, Instant recordedAt, Instant utc) {
+        Deque<Sample> q = bySource.computeIfAbsent(sourceId, k -> new ArrayDeque<>());
+        synchronized (q) {
+            q.addLast(new Sample(recordedAt, utc));
         }
     }
 

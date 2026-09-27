@@ -86,7 +86,7 @@ public final class FailoverResolver {
                 .filter(r -> r.utc().isEmpty())
                 .map(TimeFusion.SourceReading::name)
                 .reduce((a, b) -> a + ", " + b)
-                .orElse("?");
+                .orElse("deaktivierte Quellen");
 
         String expl = String.format(
                 LocaleDe.FAILOVER_TEMPLATE,
